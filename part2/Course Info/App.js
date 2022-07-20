@@ -29,8 +29,10 @@ const App = () => {
     ]
   }
 
-  return <Course header={course.name} parts={course.parts} total={course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises + course.parts[3].exercises} />
 
+  return (
+    <Course header={course.name} parts={course.parts} total={course.parts} />
+  )
 }
 
 
