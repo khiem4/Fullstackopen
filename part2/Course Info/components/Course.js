@@ -1,14 +1,15 @@
 import Header from './content/Header'
 import Content from './content/Content'
+import Total from './content/Total'
 
 const Course = (props) => {
-    const { header, parts } = props
-    console.log(parts)
+    const { header, parts, total } = props
 
     return (
         <div>
             <Header header={header} />
             <Content parts={parts} />
+            <Total total={total} />
         </div>
     )
 }
