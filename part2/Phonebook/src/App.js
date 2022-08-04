@@ -40,6 +40,7 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      .catch(error => console.log(error))
   }
 
   const filterName = (event) => {
@@ -50,12 +51,30 @@ const App = () => {
       )))
   }
 
+  const handleDelete = (id) => {
+    const url = 'http://localhost:3001/persons'
+    const name = persons.find(name => name.id === id)
+
+    if (window.confirm(`Delete ${name.name}?`)) {
+      axios
+        .delete(`${url}/${id}`)
+        .then(() => {
+          setPersonsToShow(personsToShow.filter(p => p.id !== id))
+          setPersons(persons.filter(p => p.id !== id))
+        })
+    }
+
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
+
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
+
+
 
   return (
     <div>
@@ -66,7 +85,14 @@ const App = () => {
         newName={newName} handleNameChange={handleNameChange}
         newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      {personsToShow.map(person =>
+        <Persons
+          key={person.id}
+          persons={person.name}
+          number={person.number}
+          handle={() => handleDelete(person.id)}
+        />
+      )}
     </div >
   )
 }
@@ -79,12 +105,14 @@ const Filter = ({ newFilter, filterName }) => {
   )
 }
 
-const Persons = ({ personsToShow }) => {
+const Persons = ({ persons, number, handle }) => {
   return (
-    <>
-      {personsToShow.map(person =>
-        <p key={person.id}> {person.name} {person.number}</p>)}
-    </>
+    <p>
+      {persons} {number}
+      <button onClick={handle}>
+        delete</button>
+
+    </p>
   )
 }
 
