@@ -16,5 +16,11 @@ const create = (newNameNumber) => {
         .then(response => response.data)
 }
 
+const update = (id, newNumber) => {
+    return axios
+        .put(`${baseUrl}/${id}`, newNumber)
+        .then(response => response.data)
+}
 
-export default { getAll, create }
+
+export default { getAll, create, update }

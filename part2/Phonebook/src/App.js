@@ -6,8 +6,7 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [newFilter, setFilter] = useState('')
-  const [personsToShow, setPersonsToShow] = useState(persons)
+  const [filter, setFilter] = useState('')
 
 
   useEffect(() => {
@@ -15,7 +14,6 @@ const App = () => {
       .getAll()
       .then(initial => {
         setPersons(initial)
-        setPersonsToShow(initial)
       })
   }, [])
 
@@ -27,28 +25,25 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1
     }
-    const checkObject = persons.find(value => value.name === newName)
-    if (!!checkObject) {
-      return alert(`${newName} is already added to phonebook`)
+    const checkName = persons.find(person => person.name === newName)
+    const changeNumber = { ...checkName, number: newNumber }
+    if (!checkName) {
+      phoneService
+        .create(nameNumberObject)
+        .then(addPhone => {
+          setPersons(persons.concat(addPhone))
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(error => console.log(error))
+    } else if (window.confirm(`${checkName.name} is already added to phonebook,
+    replace the number with the new one?`)) {
+      return phoneService
+        .update(checkName.id, changeNumber)
+        .then(newNumber => {
+          setPersons(persons.map(p => p.id === checkName.id ? newNumber : p))
+        })
     }
-
-    phoneService
-      .create(nameNumberObject)
-      .then(addPhone => {
-        setPersons(persons.concat(addPhone))
-        setPersonsToShow(persons.concat(addPhone))
-        setNewName('')
-        setNewNumber('')
-      })
-      .catch(error => console.log(error))
-  }
-
-  const filterName = (event) => {
-    const filter = event.target.value
-    setFilter(filter)
-    setPersonsToShow(persons.filter(person =>
-      person.name.toLowerCase().includes(newFilter.toLocaleLowerCase()
-      )))
   }
 
   const handleDelete = (id) => {
@@ -59,11 +54,9 @@ const App = () => {
       axios
         .delete(`${url}/${id}`)
         .then(() => {
-          setPersonsToShow(personsToShow.filter(p => p.id !== id))
           setPersons(persons.filter(p => p.id !== id))
         })
     }
-
   }
 
   const handleNameChange = (event) => {
@@ -74,18 +67,24 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-
+  const filterName = (event) => {
+    setFilter(event.target.value)
+  }
+  const search = filter
+    ? persons.filter(person =>
+      person.name.toLowerCase().includes(filter.toLowerCase()))
+    : persons
 
   return (
     <div>
       <h2>Phone book</h2>
-      <Filter newFilter={newFilter} filterName={filterName} />
+      <Filter value={filter} filterName={filterName} />
       <h2>Add a new</h2>
       <PersonForm addName={addName}
         newName={newName} handleNameChange={handleNameChange}
         newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      {personsToShow.map(person =>
+      {search.map(person =>
         <Persons
           key={person.id}
           persons={person.name}
@@ -97,10 +96,10 @@ const App = () => {
   )
 }
 
-const Filter = ({ newFilter, filterName }) => {
+const Filter = ({ value, filterName }) => {
   return (
     <div>
-      filter show with: <input value={newFilter} onChange={filterName} />
+      filter show with: <input value={value} onChange={filterName} />
     </div>
   )
 }
