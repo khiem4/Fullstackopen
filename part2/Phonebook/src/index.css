@@ -1,0 +1,29 @@
+.notifMgs {
+    border-style: solid;
+    color: grey;
+    border-color: greenyellow;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: grey;
+    border-width: 4px;
+}
+
+.success {
+    color: green;
+    margin-left: 20px;
+}
+
+.error {
+    color: red;
+    margin-left: 20px;
+}
+
+.notifMgs2 {
+    border-style: solid;
+    color: grey;
+    border-color: red;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: grey;
+    border-width: 4px;
+}

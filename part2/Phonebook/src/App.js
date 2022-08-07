@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import phoneService from './module/phone'
 
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
 
   useEffect(() => {
@@ -27,10 +29,15 @@ const App = () => {
     }
     const checkName = persons.find(person => person.name === newName)
     const changeNumber = { ...checkName, number: newNumber }
+
     if (!checkName) {
       phoneService
         .create(nameNumberObject)
         .then(addPhone => {
+          setSuccessMessage(`Added ${nameNumberObject.name}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 3000)
           setPersons(persons.concat(addPhone))
           setNewName('')
           setNewNumber('')
@@ -38,7 +45,7 @@ const App = () => {
         .catch(error => console.log(error))
     } else if (window.confirm(`${checkName.name} is already added to phonebook,
     replace the number with the new one?`)) {
-      return phoneService
+      phoneService
         .update(checkName.id, changeNumber)
         .then(newNumber => {
           setPersons(persons.map(p => p.id === checkName.id ? newNumber : p))
@@ -77,13 +84,16 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phone book</h2>
+      <h1>Phone book</h1>
       <Filter value={filter} filterName={filterName} />
-      <h2>Add a new</h2>
-      <PersonForm addName={addName}
+      <h1>Add a new</h1>
+      <Notification message={successMessage} />
+      <PersonForm
+        addName={addName}
         newName={newName} handleNameChange={handleNameChange}
-        newNumber={newNumber} handleNumberChange={handleNumberChange} />
-      <h2>Numbers</h2>
+        newNumber={newNumber} handleNumberChange={handleNumberChange}
+      />
+      <h1>Numbers</h1>
       {search.map(person =>
         <Persons
           key={person.id}
@@ -93,6 +103,16 @@ const App = () => {
         />
       )}
     </div >
+  )
+}
+
+const Notification = ({ message }) => {
+  return (
+    <div className='notifMgs'>
+      <h2>
+        {message}
+      </h2>
+    </div>
   )
 }
 
