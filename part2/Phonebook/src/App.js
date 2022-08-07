@@ -9,7 +9,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
-
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     phoneService
@@ -36,7 +36,7 @@ const App = () => {
         .then(addPhone => {
           setSuccessMessage(`Added ${nameNumberObject.name}`)
           setTimeout(() => {
-            setSuccessMessage(null)
+            setSucessMessage(null)
           }, 3000)
           setPersons(persons.concat(addPhone))
           setNewName('')
@@ -60,8 +60,13 @@ const App = () => {
     if (window.confirm(`Delete ${name.name}?`)) {
       axios
         .delete(`${url}/${id}`)
-        .then(() => {
-          setPersons(persons.filter(p => p.id !== id))
+        .then(() => setPersons(persons.filter(p => p.id !== id)))
+        .catch(() => {
+          setErrorMessage(`Information of ${name.name} has already delete from server`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 3000)
+          setPersons(persons.filter(person => person.id !== id))
         })
     }
   }
@@ -82,12 +87,14 @@ const App = () => {
       person.name.toLowerCase().includes(filter.toLowerCase()))
     : persons
 
+
   return (
     <div>
       <h1>Phone book</h1>
+      <Success message={successMessage} />
+      <Error message={errorMessage} />
       <Filter value={filter} filterName={filterName} />
       <h1>Add a new</h1>
-      <Notification message={successMessage} />
       <PersonForm
         addName={addName}
         newName={newName} handleNameChange={handleNameChange}
@@ -106,15 +113,31 @@ const App = () => {
   )
 }
 
-const Notification = ({ message }) => {
-  return (
-    <div className='notifMgs'>
-      <h2>
-        {message}
-      </h2>
-    </div>
-  )
+const Success = ({ message }) => {
+  if (message) {
+    return (
+      <div className='notifMgs1'>
+        <h2 className='success'>
+          {message}
+        </h2>
+      </div>
+    )
+  }
+  return <div></div>
 }
+const Error = ({ message }) => {
+  if (message) {
+    return (
+      <div className='notifMgs2'>
+        <h2 className='error'>
+          {message}
+        </h2>
+      </div>
+    )
+  }
+  return <div></div>
+}
+
 
 const Filter = ({ value, filterName }) => {
   return (
@@ -130,7 +153,6 @@ const Persons = ({ persons, number, handle }) => {
       {persons} {number}
       <button onClick={handle}>
         delete</button>
-
     </p>
   )
 }
