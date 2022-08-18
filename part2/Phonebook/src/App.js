@@ -36,7 +36,7 @@ const App = () => {
         .then(addPhone => {
           setSuccessMessage(`Added ${nameNumberObject.name}`)
           setTimeout(() => {
-            setSucessMessage(null)
+            setSuccessMessage(null)
           }, 3000)
           setPersons(persons.concat(addPhone))
           setNewName('')
