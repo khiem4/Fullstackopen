@@ -1,7 +1,5 @@
 import axios from 'axios'
-
-
-const baseUrl = 'http://localhost:3002/api/persons'
+const baseUrl = '/api/persons'
 
 
 const getAll = () => {
@@ -22,5 +20,5 @@ const update = (id, newNumber) => {
         .then(response => response.data)
 }
 
-
+// eslint-disable-next-line
 export default { getAll, create, update }
