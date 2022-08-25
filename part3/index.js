@@ -1,19 +1,13 @@
 require('dotenv').config()
 
 const express = require("express")
-const morgan = require("morgan")
 const app = express()
+const morgan = require("morgan")
 const cors = require('cors')
-
 const Person = require('./models/phonebook')
-const { default: mongoose } = require('mongoose')
+const mongoose = require('mongoose')
 
 
-
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-    console.log(`connect to server ${PORT}`)
-})
 
 app.use(cors())
 
@@ -25,7 +19,10 @@ morgan.token('body', (req, res) => {
     return JSON.stringify(req.body)
 })
 
-app.use(morgan(':method :url :body'))
+app.use(morgan(`
+:method 
+:url 
+:body`))
 
 
 app.get('/api/persons', (request, response) => {
@@ -54,9 +51,11 @@ app.post('/api/persons', (request, response) => {
     //         error: 'name or number is missing'
     //     })
     // }
-    newPerson.save().then(savedPerson => {
-        response.json(savedPerson)
-    })
+    newPerson.save()
+        .then(savedPerson => {
+            response.json(savedPerson)
+        })
+        .catch(error => next(error))
 })
 
 
@@ -76,12 +75,25 @@ app.get('/api/persons/:id', (request, response) => {
 
 
 app.delete("/api/persons/:id", (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter((person) => person.id !== id)
+    Person.findByIdAndRemove(request.params.id)
+        .then(result => {
 
-    response.status(204).end()
+            response.status(204).end()
+            console.log(result)
+        })
+        .catch(error => next(error))
 })
 
+const errorHandle = (error, request, response, next) => {
+    console.error(error)
 
+    next(error)
+}
 
+app.use(errorHandle)
+
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+    console.log(`connect to server ${PORT}`)
+})
 
