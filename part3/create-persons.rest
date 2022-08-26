@@ -1,20 +1,29 @@
-GET http://localhost:3002/api/persons
+GET http://localhost:3001/api/persons
 
 ###
-GET http://localhost:3002/api/persons/2 
+GET http://localhost:3001/api/persons/630785ab2e2c09d05838571
 
 ###
-GET http://localhost:3002/info
+GET http://localhost:3001/info
 
 ###
 
-DELETE http://localhost:3002/api/persons/5
+DELETE http://localhost:3001/api/persons/630270da30af14081bd17f95
 
 ###
-POST http://localhost:3002/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-  "name": "khiem",
-    "number": "12-43-234345"
+  "name": "khiem",  
+  "number": "123"
+}
+
+###
+PUT http://localhost:3001/api/persons/6302731e0b1e291c2f472e65
+Content-Type: application/json
+
+{
+  "name": "Arto Vihavainen",
+  "number": "123569"
 }
