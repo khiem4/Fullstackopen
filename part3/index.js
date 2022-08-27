@@ -48,14 +48,9 @@ app.post('/api/persons', (request, response, next) => {
 
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const body = request.body
+    const { name, number } = request.body
 
-    const person = {
-        name: body.name,
-        number: body.number
-    }
-
-    Persons.findByIdAndUpdate(request.params.id, person, { new: true })
+    Persons.findByIdAndUpdate(request.params.id, { name, number }, { new: true })
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
@@ -92,8 +87,11 @@ app.delete("/api/persons/:id", (request, response, next) => {
 
 const errorHandle = (error, request, response, next) => {
     console.error(error)
-    if (error = 'CastError') {
-        return response.status(404).send({ error: 'wrong id' })
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'wrong id' })
+    }
+    if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
