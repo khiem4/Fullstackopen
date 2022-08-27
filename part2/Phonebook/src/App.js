@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import phoneService from './module/phone'
+
 
 
 const App = () => {
@@ -27,6 +27,7 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1
     }
+
     const checkName = persons.find(person => person.name === newName)
     const changeNumber = { ...checkName, number: newNumber }
 
@@ -42,7 +43,8 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
-        .catch(error => console.log(error))
+        .catch(error => setErrorMessage(`${error.response.data.error}`))
+
     } else if (window.confirm(`${checkName.name} is already added to phonebook,
     replace the number with the new one?`)) {
       phoneService
@@ -54,15 +56,14 @@ const App = () => {
   }
 
   const handleDelete = (id) => {
-    const url = 'http://localhost:3001/persons'
-    const name = persons.find(name => name.id === id)
+    const person = persons.find(person => person.id === id)
 
-    if (window.confirm(`Delete ${name.name}?`)) {
-      axios
-        .delete(`${url}/${id}`)
+    if (window.confirm(`Delete ${person.name}?`)) {
+      phoneService
+        .deleteId(id)
         .then(() => setPersons(persons.filter(p => p.id !== id)))
         .catch(() => {
-          setErrorMessage(`Information of ${name.name} has already delete from server`)
+          setErrorMessage(`Information of ${person.name} has already delete from server`)
           setTimeout(() => {
             setErrorMessage(null)
           }, 3000)
@@ -116,7 +117,7 @@ const App = () => {
 const Success = ({ message }) => {
   if (message) {
     return (
-      <div className='notifMgs1'>
+      <div className='msgSuccess'>
         <h2 className='success'>
           {message}
         </h2>
@@ -128,7 +129,7 @@ const Success = ({ message }) => {
 const Error = ({ message }) => {
   if (message) {
     return (
-      <div className='notifMgs2'>
+      <div className='msgError'>
         <h2 className='error'>
           {message}
         </h2>
