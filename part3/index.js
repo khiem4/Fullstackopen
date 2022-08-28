@@ -33,11 +33,15 @@ app.get('/api/persons', (request, response) => {
 
 
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body
+    const { name, number } = request.body
+
+    if (!name || !number) {
+        return response.status(400).json({ error: 'Please provide a name or number' }).end()
+    }
 
     const newPerson = new Persons({
-        name: body.name,
-        number: body.number,
+        name: name,
+        number: number,
         date: new Date()
     })
 
