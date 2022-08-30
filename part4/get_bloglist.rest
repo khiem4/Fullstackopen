@@ -1,0 +1,12 @@
+GET  http://localhost:3003/api/blogs
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    " title": "React JS Isn't Actually A Web Framework But Why Are There So Many Others?",
+  "author": "cassaden",
+  "url": "https://dev.to/cassaden/react-js-isnt-actually-a-web-framework-but-why-are-there-so-many-others-27fd",
+  "likes": 3
+}
