@@ -1,22 +1,8 @@
-require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
+const Blog = require('./models/blog')
 
-
-
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
-
-const Blog = mongoose.model('Blog', blogSchema)
-
-const mongoUrl = process.env.mongoUrl
-mongoose.connect(mongoUrl)
 
 app.use(cors())
 app.use(express.json())
@@ -30,9 +16,9 @@ app.get('/api/blogs', (request, response) => {
 })
 
 app.post('/api/blogs', (request, response) => {
-  const blog = new Blog(request.body)
+  const newBlog = new Blog(request.body)
 
-  blog
+  newBlog
     .save()
     .then(result => {
       response.status(201).json(result)
