@@ -7,7 +7,7 @@ const cors = require('cors')
 const logger = require('./utils/logger')
 const middleWare = require('./utils/middleware')
 
-const blogRouter = require('./controllers/blog.js')
+const blogRouter = require('./controllers/blogs')
 const userRouter = require('./controllers/users')
 
 logger.info('connecting to', config.MONGODB_URI)
