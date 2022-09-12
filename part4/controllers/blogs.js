@@ -46,8 +46,19 @@ blogRouter.post('/', async (request, response) => {
 
 
 blogRouter.delete('/:id' , async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if (blog.user.toString() === decodedToken.id.toString()) {
+    await Blog.findByIdAndDelete(id)
+    return response.status(204).end()
+  }
+
+  response.status(403).json({
+    error:'this user do not have permission to delete files'
+  })
 })
 
 
