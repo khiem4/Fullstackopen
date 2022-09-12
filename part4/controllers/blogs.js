@@ -14,26 +14,18 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.get('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
+
   if(blog) {
-    response.json(blog)
-  } else {
-    response.status(404).end()
+    return response.json(blog)
   }
+  response.status(404).end()
 })
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if(authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
 
 blogRouter.post('/', async (request, response) => {
   const body = request.body
 
-  const token = getTokenFrom(request)
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
   if(!decodedToken.id) {
     return response.status(401).json({ error: 'invalid token' })
