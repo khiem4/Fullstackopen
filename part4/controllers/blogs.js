@@ -1,8 +1,6 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
-
+const { userExtractor } = require('../utils/middleware')
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -22,16 +20,11 @@ blogRouter.get('/:id', async (request, response) => {
 })
 
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/',userExtractor ,async (request, response) => {
   const body = request.body
+  const user = request.user
+  console.log('user:', user.id)
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-  if(!decodedToken.id) {
-    return response.status(401).json({ error: 'invalid token' })
-  }
-
-  const user = await User.findById(decodedToken.id)
   const blog = new Blog({
     ...body,
     user: user._id
@@ -45,19 +38,21 @@ blogRouter.post('/', async (request, response) => {
 })
 
 
-blogRouter.delete('/:id' , async (request, response) => {
+blogRouter.delete('/:id' , userExtractor, async (request, response) => {
   const id = request.params.id
   const blog = await Blog.findById(id)
+  const user = request.user
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-  if (blog.user.toString() === decodedToken.id.toString()) {
+  if (blog.user.toString() === user.id.toString()) {
     await Blog.findByIdAndDelete(id)
     return response.status(204).end()
   }
+  if(!request.token) {
+    return response.status(403).json({ error: 'you need to login first' })
+  }
 
   response.status(403).json({
-    error:'this user do not have permission to delete files'
+    error:'this user do not have permission to delete the file'
   })
 })
 

@@ -1,4 +1,6 @@
 const logger = require('./logger')
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -11,6 +13,7 @@ const requestLogger = (request, response, next) => {
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization')
   request.token = null
+
   if(authorization && authorization.toLowerCase().startsWith('bearer ')) {
     request.token = authorization.substring(7)
   }
@@ -18,6 +21,18 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+const userExtractor = async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if(!request.token || !decodedToken.id) {
+    return response.status(403).json({
+      error: 'token is missing or invalid'
+    })
+  }
+
+  request.user = await User.findById(decodedToken.id)
+  next()
+}
 
 const errorHandle = (error,request,response,next) => {
   logger.error(error.message)
@@ -28,6 +43,11 @@ const errorHandle = (error,request,response,next) => {
   if(error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
+  if (error.name === 'TokenExpiredError') {
+    return response.status(401).json({
+      error: 'token expired'
+    })
+  }
 
   next(error)
 }
@@ -35,5 +55,6 @@ const errorHandle = (error,request,response,next) => {
 module.exports = {
   requestLogger,
   errorHandle,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }
