@@ -5,14 +5,31 @@ const api = supertest(app)
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
 
+let authorization
 
 beforeEach(async () => {
+  const user = {
+    username: 'testing',
+    name: 'tester',
+    password: 'test'
+  }
+
+  await api
+    .post('/api/users')
+    .send(user)
+
+  const result = await api
+    .post('/api/login')
+    .send(user)
+  authorization = `bearer ${result.body.token}`
+
   await Blog.deleteMany({})
 
   const blogObject = helper.initialBlog
     .map(blog => new Blog(blog))
-  const promiseArray = blogObject.map(blog => blog.save())
-  await Promise.all(promiseArray)
+  const promiseArrayBlog = blogObject
+    .map(blog => blog.save())
+  await Promise.all(promiseArrayBlog)
 })
 
 
@@ -26,7 +43,7 @@ test('blogs are returned as json', async () => {
 
 describe('add new blog post', () => {
   test('success with valid data', async () => {
-    const newBLog = {
+    const newBlog = {
       title: 'testing',
       author: 'alex',
       url: 'localhost:3003/test',
@@ -34,14 +51,35 @@ describe('add new blog post', () => {
     }
     await api
       .post('/api/blogs')
-      .send(newBLog)
+      .send(newBlog)
+      .set('authorization', authorization)
       .expect(201)
       .expect('content-type', /application\/json/)
 
     const totalBlogs = await helper.blogInDb()
     expect(totalBlogs).toHaveLength(helper.initialBlog.length + 1)
+
+    const titles = totalBlogs.map(blog => blog.title)
+    expect(titles).toContain('testing')
   })
 
+
+  test('adding blog will fail if no token', async () => {
+    const newBlog = {
+      title: 'testing',
+      author: 'alex',
+      url: 'localhost:3003/test',
+      like: 100
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set('authorization', null)
+      .expect(401)
+
+    const totalBlogs = await helper.blogInDb()
+    expect(totalBlogs).toHaveLength(helper.initialBlog.length)
+  })
 
   test('missing likes property will be equal 0', async () => {
     const response = await api.get('/api/blogs')
