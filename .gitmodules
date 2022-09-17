@@ -1,0 +1,3 @@
+[submodule "part5"]
+	path = part5
+	url = git@github.com:khiem4/part5.git
