@@ -11,6 +11,9 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
+
 
 
   useEffect(() => {
@@ -32,14 +35,22 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
 
-    const user = await loginService.login({
-      username, password
-    })
-    blogService.setToken(user.token)
-    window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-    setUser(user)
-    setUsername('')
-    setPassword('')
+    try {
+      const user = await loginService.login({
+        username, password
+      })
+
+      blogService.setToken(user.token)
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (err) {
+      setErrorMessage('Wrong username or password')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
 
@@ -64,11 +75,21 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setSuccessMessage(`a new blog ${blog.title} by ${blog.author} added`)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
   }
 
 
   const loginForm = () => (
     <div>
+      <h2>log in to application</h2>
+
+      <h2>
+        {errorMessage}
+      </h2>
+
       <form onSubmit={handleLogin}>
         <div>
           username
@@ -97,6 +118,8 @@ const App = () => {
   const blogList = () => (
     <>
       <h2>blogs</h2>
+      <h2>{successMessage}</h2>
+
       {user.username} logged in
       <button onClick={handleLogout}>logout</button>
       {blogs.map(blog =>
