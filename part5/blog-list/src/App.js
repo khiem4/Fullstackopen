@@ -13,6 +13,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+  const [createBlogVisible, setCreateBlogVisible] = useState(false)
 
 
 
@@ -115,57 +116,72 @@ const App = () => {
     </div>
   )
 
-  const blogList = () => (
-    <>
-      <h2>blogs</h2>
-      <h2>{successMessage}</h2>
+  const blogList = () => {
+    const hide = { display: createBlogVisible ? 'none' : '' }
+    const show = { display: createBlogVisible ? '' : 'none' }
 
-      {user.username} logged in
-      <button onClick={handleLogout}>logout</button>
-      {blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-        />
-      )}
+    return (
+      <>
+        <h2>blogs</h2>
+        <h2>{successMessage}</h2>
 
-      <h2>create new</h2>
-      <form onSubmit={handleCreateBlog}>
-        <div>
-          title
-          <input
-            type='text'
-            value={title}
-            name='title'
-            onChange={({ target }) => setTitle(target.value)}
+        {user.username} logged in
+        <button onClick={handleLogout}>logout</button>
+        {blogs.map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
           />
-          <div>
-            author
-            <input
-              type='text'
-              value={author}
-              name='author'
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </div>
-          url
-          <input
-            type='text'
-            value={url}
-            name='url'
-            onChange={({ target }) => setUrl(target.value)}
-          />
+        )}
+
+        <h2>create new</h2>
+
+        <div style={hide}>
+          <button onClick={() => setCreateBlogVisible(true)}>create</button>
         </div>
-        <button>create</button>
-      </form>
-    </>
-  )
+        <div style={show}>
+          <form onSubmit={handleCreateBlog}>
+            <div>
+              title
+              <input
+                type='text'
+                value={title}
+                name='title'
+                onChange={({ target }) => setTitle(target.value)}
+              />
+
+              <div>
+                author
+                <input
+                  type='text'
+                  value={author}
+                  name='author'
+                  onChange={({ target }) => setAuthor(target.value)}
+                />
+
+              </div>
+              url
+              <input
+                type='text'
+                value={url}
+                name='url'
+                onChange={({ target }) => setUrl(target.value)}
+              />
+            </div>
+            <button>save</button>
+          </form>
+          <button onClick={() => setCreateBlogVisible(false)}>cancel</button>
+        </div>
+      </>
+    )
+  }
 
   return (
     <div>
-      {user === null
-        ? loginForm()
-        : blogList()
+      {
+        user === null
+          ? loginForm()
+          : blogList()
       }
     </div>
   )
