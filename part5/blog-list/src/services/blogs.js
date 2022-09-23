@@ -7,7 +7,6 @@ const setToken = newToken => {
   token = `bearer ${newToken}`
 }
 
-
 const getAll = async () => {
   const response = await axios.get(baseUrl)
   return response.data
@@ -22,14 +21,18 @@ const create = async (blog) => {
   return response.data
 }
 
-
+const update = async (id, changeBlog) => {
+  const response = await axios.put(`${baseUrl}/${id}`, changeBlog)
+  return response.data
+}
 
 
 
 const blogService = {
   getAll,
   create,
-  setToken
+  setToken,
+  update
 }
 
 export default blogService

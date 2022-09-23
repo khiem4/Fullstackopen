@@ -14,6 +14,7 @@ const App = () => {
   const [createBlogVisible, setCreateBlogVisible] = useState(false)
 
 
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -71,6 +72,12 @@ const App = () => {
     }, 5000)
   }
 
+  const handleBlogLikes = async (id, changeBlog) => {
+
+    await blogService.update(id, changeBlog)
+    setBlogs(blogs.map(blog => blog !== id ? blog : changeBlog))
+  }
+
   const blogList = () => {
     const hide = { display: createBlogVisible ? 'none' : '' }
     const show = { display: createBlogVisible ? '' : 'none' }
@@ -79,16 +86,17 @@ const App = () => {
       <>
         <h2>blogs</h2>
         <h2>{successMessage}</h2>
-        {user.username} logged in
+        <p>{user.username} logged in</p>
         <button onClick={handleLogout}>logout</button>
         {blogs.map(blog =>
           <Blog
             key={blog.id}
             blog={blog}
+            handleBlogLikes={handleBlogLikes}
           />
         )}
 
-        <h2>create new</h2>
+        <h2>create new blog</h2>
         <div style={hide}>
           <button onClick={() => setCreateBlogVisible(true)}>create</button>
         </div>
