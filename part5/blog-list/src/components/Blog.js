@@ -4,8 +4,6 @@ import { useState } from "react"
 
 const Blog = ({ blog, handleBlogLikes }) => {
   const [showBlogDetails, setShowBlogDetails] = useState(false)
-  const [likes, setLike] = useState(blog.likes)
-
 
   const hide = { display: showBlogDetails ? '' : 'none' }
 
@@ -14,10 +12,9 @@ const Blog = ({ blog, handleBlogLikes }) => {
   }
 
   const handleLikes = () => {
-    const changeBlog = { ...blog, likes: likes + 1 }
+    const changeBlog = { ...blog, likes: blog.likes + 1 }
 
     handleBlogLikes(blog.id, changeBlog)
-    setLike(likes + 1)
   }
 
 
@@ -34,7 +31,7 @@ const Blog = ({ blog, handleBlogLikes }) => {
       {blog.title}
       <button onClick={visible}>view</button>
       <div style={hide}>
-        <p>likes {likes} <button onClick={handleLikes}>like</button></p>
+        <p>likes {blog.likes} <button onClick={handleLikes}>like</button></p>
         <p>{blog.url}</p>
         <p>{blog.author}</p>
       </div>

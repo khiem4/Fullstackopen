@@ -74,8 +74,8 @@ const App = () => {
 
   const handleBlogLikes = async (id, changeBlog) => {
 
-    await blogService.update(id, changeBlog)
-    setBlogs(blogs.map(blog => blog !== id ? blog : changeBlog))
+    const returnedBlog = await blogService.update(id, changeBlog)
+    setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
   }
 
   const blogList = () => {
@@ -86,8 +86,9 @@ const App = () => {
       <>
         <h2>blogs</h2>
         <h2>{successMessage}</h2>
-        <p>{user.username} logged in</p>
-        <button onClick={handleLogout}>logout</button>
+        <p>
+          {user.username} logged in <button onClick={handleLogout}>logout</button>
+        </p>
         {blogs.map(blog =>
           <Blog
             key={blog.id}
