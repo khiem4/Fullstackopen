@@ -78,6 +78,10 @@ const App = () => {
     setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
   }
 
+  const blogsLikesInOrder = [...blogs]
+    .sort((a, b) => a.likes > b.likes ? 1 : -1)
+
+
   const blogList = () => {
     const hide = { display: createBlogVisible ? 'none' : '' }
     const show = { display: createBlogVisible ? '' : 'none' }
@@ -89,7 +93,7 @@ const App = () => {
         <p>
           {user.username} logged in <button onClick={handleLogout}>logout</button>
         </p>
-        {blogs.map(blog =>
+        {blogsLikesInOrder.map(blog =>
           <Blog
             key={blog.id}
             blog={blog}
