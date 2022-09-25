@@ -1,13 +1,11 @@
 import { useState } from "react"
-
+import PropTypes from 'prop-types'
 
 
 const Blog = ({ blog, handleBlogLikes, handleDeleteBlog, user }) => {
   const [showBlogDetails, setShowBlogDetails] = useState(false)
 
   const hide = { display: showBlogDetails ? '' : 'none' }
-
-
 
   const visible = () => {
     setShowBlogDetails(!showBlogDetails)
@@ -46,6 +44,12 @@ const Blog = ({ blog, handleBlogLikes, handleDeleteBlog, user }) => {
   )
 }
 
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleBlogLikes: PropTypes.func.isRequired,
+  handleDeleteBlog: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
+}
 
 const Button = ({ user, blog, deleteBlog }) => {
   if (user.username === blog.user.username)
