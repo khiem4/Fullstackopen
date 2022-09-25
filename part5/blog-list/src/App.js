@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,7 +12,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  const [createBlogVisible, setCreateBlogVisible] = useState(false)
+
 
 
 
@@ -62,11 +63,21 @@ const App = () => {
 
   const handleCreateBlog = async (blog) => {
 
-    await blogService.create(blog)
-    setBlogs(blogs.concat({
-      ...blog, id: blogs.length + 1
-    }))
+    const returnedBlog = await blogService.create(blog)
+    setBlogs(blogs.concat(returnedBlog))
+
     setSuccessMessage(`a new blog ${blog.title} by ${blog.author} added`)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+  }
+
+  const handleDeleteBlog = async (id) => {
+
+    await blogService.remove(id)
+    setBlogs(blogs.filter(blog => blog.id !== id))
+
+    setSuccessMessage(`delete completed`)
     setTimeout(() => {
       setSuccessMessage(null)
     }, 5000)
@@ -78,18 +89,17 @@ const App = () => {
     setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
   }
 
-  const blogsLikesInOrder = [...blogs]
-    .sort((a, b) => a.likes > b.likes ? 1 : -1)
-
 
   const blogList = () => {
-    const hide = { display: createBlogVisible ? 'none' : '' }
-    const show = { display: createBlogVisible ? '' : 'none' }
+
+    const blogsLikesInOrder = [...blogs]
+      .sort((a, b) => a.likes > b.likes ? 1 : -1)
 
     return (
       <>
         <h2>blogs</h2>
         <h2>{successMessage}</h2>
+        <h2>{errorMessage}</h2>
         <p>
           {user.username} logged in <button onClick={handleLogout}>logout</button>
         </p>
@@ -98,18 +108,15 @@ const App = () => {
             key={blog.id}
             blog={blog}
             handleBlogLikes={handleBlogLikes}
+            handleDeleteBlog={handleDeleteBlog}
+            user={user}
           />
         )}
 
         <h2>create new blog</h2>
-        <div style={hide}>
-          <button onClick={() => setCreateBlogVisible(true)}>create</button>
-        </div>
-
-        <div style={show}>
+        <Togglable buttonLabel='create'>
           <BlogForm handleCreateBlog={handleCreateBlog} />
-          <button onClick={() => setCreateBlogVisible(false)}>cancel</button>
-        </div>
+        </Togglable>
       </>
     )
   }

@@ -2,10 +2,12 @@ import { useState } from "react"
 
 
 
-const Blog = ({ blog, handleBlogLikes }) => {
+const Blog = ({ blog, handleBlogLikes, handleDeleteBlog, user }) => {
   const [showBlogDetails, setShowBlogDetails] = useState(false)
 
   const hide = { display: showBlogDetails ? '' : 'none' }
+
+
 
   const visible = () => {
     setShowBlogDetails(!showBlogDetails)
@@ -17,6 +19,10 @@ const Blog = ({ blog, handleBlogLikes }) => {
     handleBlogLikes(blog.id, changeBlog)
   }
 
+  const deleteBlog = () => {
+    window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    handleDeleteBlog(blog.id)
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -34,9 +40,18 @@ const Blog = ({ blog, handleBlogLikes }) => {
         <p>likes {blog.likes} <button onClick={handleLikes}>like</button></p>
         <p>{blog.url}</p>
         <p>{blog.author}</p>
+        <Button user={user} blog={blog} deleteBlog={deleteBlog} />
       </div>
     </div>
   )
+}
+
+
+const Button = ({ user, blog, deleteBlog }) => {
+  if (user.username === blog.user.username)
+    return (
+      <button onClick={deleteBlog}>remove</button>
+    )
 }
 
 export default Blog
