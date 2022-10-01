@@ -1,5 +1,5 @@
 import { useState } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 
 const Blog = ({ blog, handleBlogLikes, handleDeleteBlog, user }) => {
@@ -30,15 +30,26 @@ const Blog = ({ blog, handleBlogLikes, handleDeleteBlog, user }) => {
     marginBottom: 5
   }
 
+  const blogDetail = () => {
+    if (showBlogDetails === true) {
+      return (
+        <>
+          <p>likes {blog.likes} <button onClick={handleLikes}>like</button></p>
+          <p>{blog.url}</p>
+        </>
+      )
+    }
+  }
+
+
 
   return (
     <div style={blogStyle} className='blog'>
-      {blog.title}
+      <p>{blog.title}</p>
+      <p>{blog.author}</p>
       <button onClick={visible}>view</button>
       <div style={hide}>
-        <p>likes {blog.likes} <button onClick={handleLikes}>like</button></p>
-        <p>{blog.url}</p>
-        <p>{blog.author}</p>
+        {blogDetail()}
         {
           user === blog.user.username &&
           <button onClick={deleteBlog}>remove</button>
@@ -49,11 +60,11 @@ const Blog = ({ blog, handleBlogLikes, handleDeleteBlog, user }) => {
 }
 
 
-// Blog.propTypes = {
-//   blog: PropTypes.object.isRequired,
-//   handleBlogLikes: PropTypes.func.isRequired,
-//   handleDeleteBlog: PropTypes.func.isRequired,
-//   user: PropTypes.object.isRequired
-// }
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleBlogLikes: PropTypes.func.isRequired,
+  handleDeleteBlog: PropTypes.func.isRequired,
+  // user: PropTypes.string.isRequired
+}
 
 export default Blog

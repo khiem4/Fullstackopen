@@ -2,6 +2,7 @@ import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
+import userEvent from '@testing-library/user-event'
 
 let component
 
@@ -31,5 +32,17 @@ describe('<Blog />', () => {
     const div = component.container.querySelector('.blog')
     expect(div).toHaveTextContent(blog.title)
     expect(div).toHaveTextContent(blog.author)
+  })
+
+  test('blog url and likes show up when click button', async () => {
+    const user = userEvent.setup()
+    const viewButton = screen.getByText('view')
+    await user.click(viewButton)
+
+    const div = component.container.querySelector('.blog')
+
+    expect(viewButton).toBeTruthy()
+    expect(div).toHaveTextContent(blog.url)
+    expect(div).toHaveTextContent(blog.likes)
   })
 })
