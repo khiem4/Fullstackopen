@@ -14,8 +14,6 @@ const App = () => {
   const [successMessage, setSuccessMessage] = useState(null)
 
 
-
-
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -77,7 +75,7 @@ const App = () => {
     await blogService.remove(id)
     setBlogs(blogs.filter(blog => blog.id !== id))
 
-    setSuccessMessage(`delete completed`)
+    setSuccessMessage('delete completed')
     setTimeout(() => {
       setSuccessMessage(null)
     }, 5000)
@@ -91,7 +89,6 @@ const App = () => {
 
 
   const blogList = () => {
-
     const blogsLikesInOrder = [...blogs]
       .sort((a, b) => a.likes > b.likes ? 1 : -1)
 
@@ -109,7 +106,7 @@ const App = () => {
             blog={blog}
             handleBlogLikes={handleBlogLikes}
             handleDeleteBlog={handleDeleteBlog}
-            user={user}
+            user={user.username}
           />
         )}
 
@@ -153,8 +150,6 @@ const App = () => {
       </form>
     </div>
   )
-
-
 
   return (
     <div>
