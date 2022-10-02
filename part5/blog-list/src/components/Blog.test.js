@@ -24,6 +24,7 @@ describe('<Blog />', () => {
         blog={blog}
         handleBlogLikes={handleBlogLikes}
         handleDeleteBlog={handleDeleteBlog}
+        user='khiem'
       />
     )
 
@@ -40,9 +41,19 @@ describe('<Blog />', () => {
     await user.click(viewButton)
 
     const div = component.container.querySelector('.blog')
-
     expect(viewButton).toBeTruthy()
     expect(div).toHaveTextContent(blog.url)
     expect(div).toHaveTextContent(blog.likes)
+  })
+
+  test('like button is clicked twice', async () => {
+    const user = userEvent.setup()
+    const viewButton = screen.getByText('view')
+    await user.click(viewButton)
+
+    const likeButton = screen.getByText('like')
+    await user.dblClick(likeButton)
+
+    expect(handleBlogLikes.mock.calls).toHaveLength(2)
   })
 })
