@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const BlogForm = ({ handleCreateBlog }) => {
   const [title, setTitle] = useState('')
@@ -29,6 +29,7 @@ const BlogForm = ({ handleCreateBlog }) => {
           value={title}
           name='title'
           onChange={({ target }) => setTitle(target.value)}
+          placeholder='title'
         />
 
         <div>
@@ -38,6 +39,7 @@ const BlogForm = ({ handleCreateBlog }) => {
             value={author}
             name='author'
             onChange={({ target }) => setAuthor(target.value)}
+            placeholder='author'
           />
         </div>
 
@@ -47,6 +49,7 @@ const BlogForm = ({ handleCreateBlog }) => {
           value={url}
           name='url'
           onChange={({ target }) => setUrl(target.value)}
+          placeholder='url'
         />
       </div>
       <button>save</button>
