@@ -1,3 +1,4 @@
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -9,17 +10,23 @@ const anecdotesAtStart = [
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
-const asObject = (anecdote) => {
+
+export const createAnecdote = (content) => {
   return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
+    type: 'CREATE_ANECDOTE',
+    data: {
+      content: content,
+      votes: 0,
+      id: getId()
+    }
   }
 }
 
-const initialState = anecdotesAtStart.map(anecdote => asObject(anecdote))
 
-const reducer = (state = initialState, action) => {
+const initialState = anecdotesAtStart.map(anecdote => createAnecdote(anecdote))
+const anecdotes = initialState.map(anecdote => anecdote.data)
+
+const reducer = (state = anecdotes, action) => {
   console.log('state now: ', state)
   console.log('action', action)
   switch (action.type) {
@@ -30,8 +37,7 @@ const reducer = (state = initialState, action) => {
         ...anecdoteToChange, votes: anecdoteToChange.votes + 1
       }
       return state.map(anecdote => anecdote.id !== id ? anecdote : anecdoteChanged)
-    case 'ADD_ANECDOTE':
-      action.data.id = getId()
+    case 'CREATE_ANECDOTE':
       return state.concat(action.data)
     default: return state
   }
