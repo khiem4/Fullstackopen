@@ -1,12 +1,11 @@
 import { filterAnecdote } from "../reducers/filterReducer"
-import { useDispatch } from "react-redux"
+import { connect } from "react-redux"
 
-const Filter = () => {
-  const dispatch = useDispatch()
+const Filter = (props) => {
 
   const handleChange = (event) => {
     const wordsSearch = event.target.value.toLowerCase()
-    dispatch(filterAnecdote(wordsSearch))
+    props.filterAnecdote(wordsSearch)
   }
 
   const style = {
@@ -20,4 +19,9 @@ const Filter = () => {
   )
 }
 
-export default Filter
+
+const mapDispatchToProps = {
+  filterAnecdote
+}
+
+export default connect(null, mapDispatchToProps)(Filter)
