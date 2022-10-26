@@ -4,7 +4,6 @@ import { render, screen } from '@testing-library/react'
 import BlogForm from './BlogForm'
 import userEvent from '@testing-library/user-event'
 
-
 describe('<BlogForm />', () => {
   test('check event handle of blog form', async () => {
     const user = userEvent.setup()

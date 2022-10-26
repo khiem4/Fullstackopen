@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false)
@@ -22,7 +22,5 @@ const Togglable = (props) => {
     </>
   )
 }
-
-
 
 export default Togglable

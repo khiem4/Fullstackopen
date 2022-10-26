@@ -15,7 +15,7 @@ describe('<Blog />', () => {
     author: 'alex',
     likes: 12,
     url: 'https://fullstackopen.com/en/',
-    user: 'khiem'
+    user: 'khiem',
   }
 
   beforeEach(() => {
@@ -24,10 +24,9 @@ describe('<Blog />', () => {
         blog={blog}
         handleBlogLikes={handleBlogLikes}
         handleDeleteBlog={handleDeleteBlog}
-        user='khiem'
+        user="khiem"
       />
     )
-
   })
   test('render title and author', () => {
     const div = component.container.querySelector('.blog')
