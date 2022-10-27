@@ -42,8 +42,8 @@ export const createBlog = (blog) => {
 
 export const deleteBlog = (id) => {
   return async dispatch => {
-    const blogId = await blogService.remove(id)
-    dispatch(removeBlog(blogId))
+    await blogService.remove(id)
+    dispatch(removeBlog(id))
   }
 }
 

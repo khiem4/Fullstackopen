@@ -4,8 +4,9 @@ import { deleteBlog, likedBlog } from '../reducers/blogReducer'
 import { notificationMessage } from '../reducers/notificationReducer'
 
 
-const Blogs = (props) => {
+const Blogs = ({ username }) => {
   const blogState = useSelector(state => state.blog)
+
   const blogsLikeInOrder = [...blogState].sort(
     (a, b) => a.likes > b.likes ? -1 : 1
   )
@@ -16,13 +17,14 @@ const Blogs = (props) => {
         <Blog
           key={blog.id}
           blog={blog}
-        />)}
+          username={username}
+        />
+      )}
     </>
   )
 }
 
-
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, username }) => {
   const dispatch = useDispatch()
 
   const [showBlogDetails, setShowBlogDetails] = useState(false)
@@ -58,13 +60,12 @@ const Blog = ({ blog, user }) => {
   }
 
   const blogDetail = () => {
-    if (showBlogDetails === true) {
+    if (showBlogDetails) {
       return (
         <>
-          {/* {blogsLikeInOrder.map(blog =>
-          )} */}
           <p>
-            likes {blog.likes} <button onClick={handleLikes}>like</button>
+            likes {blog.likes}
+            <button onClick={handleLikes}>like</button>
           </p>
           <p>{blog.url}</p>
         </>
@@ -79,7 +80,7 @@ const Blog = ({ blog, user }) => {
       <button onClick={visible}>view</button>
       <div style={hide}>
         {blogDetail()}
-        {user === blog.user.username && (
+        {username === blog.user.username && (
           <button onClick={handleDelete}>remove</button>
         )}
       </div>
@@ -89,4 +90,4 @@ const Blog = ({ blog, user }) => {
 
 
 
-export default Blog
+export default Blogs
