@@ -5,13 +5,13 @@ import Togglable from './components/Togglable'
 import { createBlog, initialBlogs } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { notificationMessage } from './reducers/notificationReducer'
-import { userLogin, userLogout, savedUserLogged } from './reducers/userReducer'
+import { userLogin, userLogout, savedUserLogged } from './reducers/loginReducer'
 
 
 const App = () => {
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
-  const userInformation = useSelector(state => state.user)
+  const loggedInformation = useSelector(state => state.login)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -54,11 +54,11 @@ const App = () => {
         <h2>blogs</h2>
         <h2>{notification}</h2>
         <p>
-          {userInformation.username} logged in{' '}
+          {loggedInformation.username} logged in{' '}
           <button onClick={handleLogout}>logout</button>
         </p>
 
-        <Blogs username={userInformation.username} />
+        <Blogs username={loggedInformation.username} />
         <h2>create new blog</h2>
         <Togglable buttonLabel="create">
           <BlogForm handleCreateBlog={handleCreateBlog} />
@@ -98,7 +98,7 @@ const App = () => {
     </div>
   )
 
-  return <div>{userInformation === null ? loginForm() : blogList()}</div>
+  return <div>{loggedInformation === null ? loginForm() : blogList()}</div>
 }
 
 export default App

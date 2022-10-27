@@ -3,8 +3,8 @@ import blogService from '../services/blogs'
 import loginService from '../services/login'
 import { notificationMessage } from './notificationReducer'
 
-const userSlice = createSlice({
-  name: 'user',
+const loginSlice = createSlice({
+  name: 'login',
   initialState: null,
   reducers: {
     logged(state, action) {
@@ -19,7 +19,7 @@ const userSlice = createSlice({
   }
 })
 
-export const { savedUserTokenAndName, logout, logged } = userSlice.actions
+export const { savedUserTokenAndName, logout, logged } = loginSlice.actions
 
 export const userLogin = ({ username, password }) => {
   return async dispatch => {
@@ -59,4 +59,4 @@ export const savedUserLogged = (userInformation) => {
 
 
 
-export default userSlice.reducer
+export default loginSlice.reducer
