@@ -51,7 +51,7 @@ export const userLogout = () => {
   }
 }
 
-export const savedUserLogged = (userInformation) => {
+export const setUser = (userInformation) => {
   return dispatch => {
     dispatch(logged(userInformation))
   }

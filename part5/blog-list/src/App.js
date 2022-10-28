@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import Blogs from './components/Blog'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
-import { createBlog, initialBlogs } from './reducers/blogReducer'
+import { Routes, Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { notificationMessage } from './reducers/notificationReducer'
-import { userLogin, userLogout, savedUserLogged } from './reducers/loginReducer'
+import Blogs from './components/Blog'
+import Users from './components/users'
+import { initialBlogs } from './reducers/blogReducer'
+import { userLogin, userLogout, setUser } from './reducers/loginReducer'
+import blogService from './services/blogs'
 
 
 const App = () => {
@@ -21,10 +21,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUser = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser)
-      dispatch(savedUserLogged(user))
+    const loggedUserJson = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedUserJson) {
+      const user = JSON.parse(loggedUserJson)
+      dispatch(setUser(user))
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -37,33 +38,20 @@ const App = () => {
     dispatch(userLogout())
   }
 
-  const handleCreateBlog = async (blog) => {
-    dispatch(createBlog(blog))
-
-    dispatch(notificationMessage(
-      `a new blog ${blog.title} by ${blog.author} added`
-    ))
-    setTimeout(() => {
-      dispatch(notificationMessage(null))
-    }, 5000)
-  }
-
   const blogList = () => {
     return (
-      <>
+      <div>
         <h2>blogs</h2>
         <h2>{notification}</h2>
         <p>
           {loggedInformation.username} logged in{' '}
           <button onClick={handleLogout}>logout</button>
         </p>
-
-        <Blogs username={loggedInformation.username} />
-        <h2>create new blog</h2>
-        <Togglable buttonLabel="create">
-          <BlogForm handleCreateBlog={handleCreateBlog} />
-        </Togglable>
-      </>
+        <Routes>
+          <Route path='/' element={<Blogs username={loggedInformation.username} />} />
+          <Route path='/users' element={<Users />} />
+        </Routes>
+      </div>
     )
   }
 
@@ -98,7 +86,10 @@ const App = () => {
     </div>
   )
 
-  return <div>{loggedInformation === null ? loginForm() : blogList()}</div>
+  return (
+    <div>
+      {loggedInformation === null ? loginForm() : blogList()}
+    </div>)
 }
 
 export default App

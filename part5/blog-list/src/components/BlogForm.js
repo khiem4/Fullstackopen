@@ -9,7 +9,6 @@ const BlogForm = ({ handleCreateBlog }) => {
     event.preventDefault()
 
     handleCreateBlog({
-      //handleCreateBlog is a parameter used as a function
       title: title,
       author: author,
       url: url,
@@ -21,37 +20,40 @@ const BlogForm = ({ handleCreateBlog }) => {
   }
 
   return (
-    <form onSubmit={addBlog}>
-      <div>
-        title
-        <input
-          type="text"
-          value={title}
-          name="title"
-          onChange={({ target }) => setTitle(target.value)}
-          placeholder="title"
-        />
+    <div>
+      <h2>create new blog</h2>
+      <form onSubmit={addBlog}>
         <div>
-          author
+          title
           <input
             type="text"
-            value={author}
-            name="author"
-            onChange={({ target }) => setAuthor(target.value)}
-            placeholder="author"
+            value={title}
+            name="title"
+            onChange={({ target }) => setTitle(target.value)}
+            placeholder="title"
+          />
+          <div>
+            author
+            <input
+              type="text"
+              value={author}
+              name="author"
+              onChange={({ target }) => setAuthor(target.value)}
+              placeholder="author"
+            />
+          </div>
+          url
+          <input
+            type="text"
+            value={url}
+            name="url"
+            onChange={({ target }) => setUrl(target.value)}
+            placeholder="url"
           />
         </div>
-        url
-        <input
-          type="text"
-          value={url}
-          name="url"
-          onChange={({ target }) => setUrl(target.value)}
-          placeholder="url"
-        />
-      </div>
-      <button>save</button>
-    </form>
+        <button>save</button>
+      </form>
+    </div>
   )
 }
 
