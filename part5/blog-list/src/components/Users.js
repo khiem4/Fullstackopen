@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Link, Route, Routes } from 'react-router-dom'
 import usersService from '../services/users'
 
 
 const Users = () => {
   const [users, setUsers] = useState([])
-  console.log('users:', users)
 
   useEffect(() => {
     async function fetchData() {
@@ -27,7 +27,9 @@ const Users = () => {
         <tbody>
           {users.map(user =>
             <tr key={user.id}>
-              <td>{user.username}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.username}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           )}

@@ -1,30 +1,16 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createBlog, deleteBlog, likedBlog } from '../reducers/blogReducer'
+import { deleteBlog, likedBlog } from '../reducers/blogReducer'
 import { notificationMessage } from '../reducers/notificationReducer'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 
 
-const Blogs = ({ username }) => {
-  const dispatch = useDispatch()
-  const blogState = useSelector(state => state.blog)
 
-  const blogsLikeInOrder = [...blogState].sort(
+const Blogs = ({ blogs }) => {
+  const blogsLikeInOrder = [...blogs].sort(
     (a, b) => a.likes > b.likes ? -1 : 1
   )
-
-  const handleCreateBlog = (blog) => {
-    dispatch(createBlog(blog))
-
-    dispatch(notificationMessage(
-      `a new blog ${blog.title} by ${blog.author} added`
-    ))
-    setTimeout(() => {
-      dispatch(notificationMessage(null))
-    }, 5000)
-  }
-
 
   return (
     <>
@@ -32,21 +18,23 @@ const Blogs = ({ username }) => {
         <Blog
           key={blog.id}
           blog={blog}
-          username={username}
         />
       )}
       <Togglable buttonLabel="create">
-        <BlogForm handleCreateBlog={handleCreateBlog} />
+        <BlogForm />
       </Togglable>
     </>
+
   )
 }
 
-const Blog = ({ blog, username }) => {
+
+
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
+  const username = useSelector(state => state.login.username)
 
   const [showBlogDetails, setShowBlogDetails] = useState(false)
-
   const hide = { display: showBlogDetails ? '' : 'none' }
 
   const visible = () => {
@@ -67,7 +55,6 @@ const Blog = ({ blog, username }) => {
       dispatch(notificationMessage(null))
     }, 5000)
   }
-
 
   const blogStyle = {
     paddingTop: 10,
@@ -91,7 +78,6 @@ const Blog = ({ blog, username }) => {
     }
   }
 
-
   return (
     <div>
       <div style={blogStyle} className="blog">
@@ -110,5 +96,5 @@ const Blog = ({ blog, username }) => {
 }
 
 
-
 export default Blogs
+
