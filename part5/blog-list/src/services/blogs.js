@@ -26,12 +26,17 @@ const update = async (id, like) => {
   return response.data
 }
 
+const postComment = async (id, comment) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, { comment })
+  return response.data
+}
+
 const remove = async (id) => {
   const config = {
     headers: { Authorization: token },
   }
 
-  const response = await axios.delete(`${baseUrl}/${id}`, config)
+  const response = await axios.delete(`${baseUrl}/${id}/comments`, config)
   return response.data
 }
 
@@ -41,6 +46,7 @@ const blogService = {
   setToken,
   update,
   remove,
+  postComment
 }
 
 export default blogService

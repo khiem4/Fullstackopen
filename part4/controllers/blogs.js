@@ -1,35 +1,41 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
-const { userExtractor } = require('../utils/middleware')
+const Comment = require('../models/comment')
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({})
-    .populate('user', { username: 1, name: 1, id:1 } )
+  const blogs = await Blog.find({})
+    .populate('user', {
+      username: 1, name: 1, id: 1,
+    })
+    .populate('comments', {
+      comment: 1, id: 1,
+    })
   response.json(blogs)
 })
 
-
 blogRouter.get('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
+    .populate('user', {
+      username: 1, name: 1, id: 1,
+    })
+    .populate('comments', {
+      comment: 1, id: 1,
+    })
 
-  if(blog) {
+  if (blog) {
     return response.json(blog)
   }
   response.status(404).end()
 })
 
-
-blogRouter.post('/',userExtractor ,async (request, response) => {
+blogRouter.post('/', async (request, response) => {
   const body = request.body
   const user = request.user
-  console.log('user:', user.id)
 
   const blog = new Blog({
     ...body,
-    user: user._id
+    user: user._id,
   })
-
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
@@ -37,34 +43,66 @@ blogRouter.post('/',userExtractor ,async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-
-blogRouter.delete('/:id' , userExtractor, async (request, response) => {
-  const id = request.params.id
+blogRouter.post('/:id/comments', async (request, response) => {
+  const { id } = request.params
+  const { comment } = request.body
   const blog = await Blog.findById(id)
-  const user = request.user
+    .populate('user', {
+      username: 1, name: 1, id: 1,
+    })
+    .populate('comments', {
+      comment: 1, id: 1,
+    })
 
-  if (blog.user.toString() === user.id.toString()) {
+  const newComment = new Comment({
+    comment,
+    blog: blog._id
+  })
+
+  const savedComment = await newComment.save()
+  blog.comments = blog.comments.concat(savedComment)
+  const updateBlog = await blog.save()
+
+  updateBlog
+    ? response.status(201).json(updateBlog)
+    : response.status(404).end()
+})
+
+blogRouter.put('/:id', async (request, response) => {
+  const id = request.params.id
+  const { likes } = request.body
+
+  const updatedLikes = await Blog.findByIdAndUpdate(
+    id,
+    { likes },
+    { new: true }
+  ).populate('comments', {
+    comment: 1,
+    id: 1,
+  })
+
+  response.json(updatedLikes)
+})
+
+blogRouter.delete('/:id', async (request, response) => {
+  const id = request.params.id
+  const user = request.user
+  const blog = await Blog.findById(id)
+
+  if (blog.user.toString() === user._id.toString()) {
     await Blog.findByIdAndDelete(id)
     return response.status(204).end()
   }
-  if(!request.token) {
-    return response.status(403).json({ error: 'you need to login first' })
+  if (!request.token) {
+    return response.status(403).json({
+      error: 'you need to login first',
+    })
   }
 
   response.status(403).json({
-    error:'this user do not have permission to delete the file'
+    error: 'this user do not have permission to delete the file',
   })
 })
-
-
-blogRouter.put('/:id', async (request, response) => {
-  const { likes } = request.body
-
-  const updatedNote = await Blog
-    .findByIdAndUpdate(request.params.id, { likes } ,{ new: true })
-  response.json(updatedNote)
-})
-
 
 
 module.exports = blogRouter
