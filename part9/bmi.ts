@@ -17,7 +17,7 @@ function parseArgs(args: string[]): values {
   }
 }
 
-function calculateBmi(height: number, weight: number): string {
+export default function calculateBmi(height: number, weight: number): string {
   const toMeter = height / 100
   const bmi = weight / (toMeter * toMeter)
 
@@ -40,4 +40,6 @@ try {
     console.log(error.message)
   }
 }
+
+
 
