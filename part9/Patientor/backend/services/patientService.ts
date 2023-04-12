@@ -1,5 +1,6 @@
 import patientsData from "../data/patients";
-import { excludeSsnPatient, patient } from "../types";
+import { excludeSsnPatient, newPatient, patient } from "../types";
+import { v1 as uuid } from 'uuid'
 
 const getPatients = (): patient[] => {
   return patientsData
@@ -17,7 +18,20 @@ const getExcludeSsnPatient = (): excludeSsnPatient[] => {
   ))
 }
 
+const addPatient = (obj: newPatient): patient => {
+  const id = uuid()
+  const newPatient = {
+    id,
+    ...obj
+  }
+
+  patientsData.push(newPatient)
+
+  return newPatient
+}
+
 export default {
   getPatients,
   getExcludeSsnPatient,
+  addPatient,
 }
