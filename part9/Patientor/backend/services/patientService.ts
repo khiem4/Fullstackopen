@@ -1,8 +1,8 @@
 import patientsData from "../data/patients";
-import { excludeSsnPatient, newPatient, patient } from "../types";
+import { excludeSsnPatient, Gender, newPatient, Patient } from "../types";
 import { v1 as uuid } from 'uuid'
 
-const getPatients = (): patient[] => {
+const getPatients = (): Patient[] => {
   return patientsData
 }
 
@@ -12,13 +12,13 @@ const getExcludeSsnPatient = (): excludeSsnPatient[] => {
       id,
       name,
       dateOfBirth,
-      gender,
+      gender: gender as Gender,
       occupation
     }
   ))
 }
 
-const addPatient = (obj: newPatient): patient => {
+const addPatient = (obj: newPatient): Patient => {
   const id = uuid()
   const newPatient = {
     id,
