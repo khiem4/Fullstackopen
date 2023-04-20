@@ -1,6 +1,6 @@
-import { Course } from "../types"
+import { CoursePartBase } from "../types"
 
-function Total({ courseParts }: { courseParts: Course[] }) {
+function Total({ courseParts }: { courseParts: CoursePartBase[] }) {
   return (
     <p>
       Number of exercises{" "}

@@ -1,8 +1,16 @@
-import { Course } from "../types"
+import { CoursePart } from "../types"
+import Part from "./Part"
 
-function Content({ name, exerciseCount }: Course) {
+function Content({ parts }: { parts: CoursePart[] }) {
   return (
-    <p>{name} {exerciseCount}</p>
+    <div>
+      {parts.map((part, index) => (
+        <div key={index}>
+          <Part part={part} />
+        </div>
+      ))}
+    </div>
+
   )
 }
 
