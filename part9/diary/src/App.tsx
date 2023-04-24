@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import diaryService from './services/diary';
 
-interface Diary {
+export interface Diary {
   date: string,
   visibility: string,
   weather: string,
@@ -16,12 +16,24 @@ function App() {
   const [diaries, setDiaries] = useState<Diary[]>([])
 
   useEffect(() => {
-    axios.get<Diary[]>('http://localhost:3001/api/diaries')
-      .then(res => setDiaries(res.data))
+    (async function () {
+      const response = await diaryService.getAll()
+      setDiaries(response)
+    }())
   }, [])
 
   const submit = (e: React.SyntheticEvent) => {
     e.preventDefault()
+
+    const newDiary = {
+      date,
+      visibility,
+      weather,
+      comment,
+    }
+
+    diaryService.create(newDiary)
+    setDiaries(diaries.concat(newDiary))
   }
 
   return (
@@ -57,7 +69,7 @@ function App() {
           <input
             type="text"
             name='date'
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDate(e.target.value.toString())}
             value={date}
           />
           <button>add</button>
