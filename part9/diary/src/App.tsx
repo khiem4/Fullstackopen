@@ -8,12 +8,15 @@ export interface Diary {
   comment: string
 }
 
+export type error = string | undefined
+
 function App() {
   const [weather, setWeather] = useState('')
   const [comment, setComment] = useState('')
   const [visibility, setVisibility] = useState('')
   const [date, setDate] = useState('')
   const [diaries, setDiaries] = useState<Diary[]>([])
+  const [error, setError] = useState<error>('')
 
   useEffect(() => {
     (async function () {
@@ -32,7 +35,7 @@ function App() {
       comment,
     }
 
-    diaryService.create(newDiary)
+    diaryService.create(newDiary, setError)
     setDiaries(diaries.concat(newDiary))
   }
 
@@ -40,6 +43,9 @@ function App() {
     <>
       <div>
         <h2>add new entry</h2>
+        <p style={{ color: 'red' }}>
+          {error}
+        </p>
         <form
           onSubmit={submit}
           style={{ display: "grid", width: "30%", }} >
