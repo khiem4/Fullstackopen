@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom"
 import patientService from "../services/patients"
 import { Diagnosis, Patient } from "../types"
 import diagnoseService from "../services/diagnose"
+import EntryDetails from "./EntryDetails"
 
 function SinglePatient() {
     const [patient, setPatient] = useState<Patient>()
@@ -39,12 +40,15 @@ function SinglePatient() {
                     <p>{patient.ssn}</p>
                     <p>{patient.occupation}</p>
                     <h3>entries</h3>
-                    
+
                     {patient.entries.map((e, index) =>
                         <div key={index + 1}>
                             <p>{e.date} {e.description}</p>
+                            <EntryDetails entry={e} />
+                            <p>diagnose by {e.specialist}</p>
                         </div>
                     )}
+
 
                     {patientDiagnosis?.map((item, index) =>
                         <ul key={index + 1}>
